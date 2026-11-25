@@ -135,11 +135,12 @@
 </head>
 <body>
 
-  <!-- Google Presentation (Chromebit 02) -->
+  <!-- Google Presentation (Gychromebit20) -->
   <div id="presentation-container">
     <iframe 
       id="presentation-frame"
       src="about:blank"
+      allow="autoplay; fullscreen"
       allowfullscreen="true"
       mozallowfullscreen="true"
       webkitallowfullscreen="true">
@@ -183,7 +184,8 @@
     // ==========================================
     // 1. KONFIGURATION & SCHEMAN
     // ==========================================
-    const PRESENTATION_URL = "https://docs.google.com/presentation/d/e/2PACX-1vTpD0edW_s0PXIyNwog_1mkmCRYMkaW_0jMt1wzCE2Bc4FA9QxUuFmhSOzeTIFNILVAck5FwgG_5r-V/embed?start=true&loop=true&delayms=39600000&rm=minimal";
+    // Ändra delayms=30000 (30 sekunder) om du vill ha längre eller kortare tid per bild (i millisekunder)
+    const PRESENTATION_URL = "https://docs.google.com/presentation/d/e/2PACX-1vTpD0edW_s0PXIyNwog_1mkmCRYMkaW_0jMt1wzCE2Bc4FA9QxUuFmhSOzeTIFNILVAck5FwgG_5r-V/embed?start=true&loop=true&delayms=36900000&rm=minimal";
     const RSS_MENU_URL = "https://www.skolmat.info/api/public/matsedlar/C3EC1DB9-EE3A-4BD4-B7F5-D0793C570944/rss?period=today";
 
     // Testläge: Sätt till true om du testar utanför skoltid och vill tvinga fram skärmen direkt
@@ -216,7 +218,7 @@
     function updateDisplayAndSchedule() {
       const now = new Date();
       
-      // Korrigerad digital tid
+      // Digital tid
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
       document.getElementById('clock-time').textContent = `${hours}:${minutes}`;
@@ -285,7 +287,9 @@
       const overlay = document.getElementById('overlay-wrapper');
 
       if (active) {
-        if (iframe.src === 'about:blank' || !iframe.src) {
+        if (iframe.src === 'about:blank' |
+
+| !iframe.src) {
           iframe.src = PRESENTATION_URL;
         }
         container.style.display = 'block';
@@ -325,9 +329,15 @@
           const json = await res.json();
           if (json.status === 'ok' && Array.isArray(json.items) && json.items.length > 0) {
             return json.items.map(item => ({
-              title: item.title || '',
-              description: item.description || '',
-              pubDate: item.pubDate || ''
+              title: item.title |
+
+| '',
+              description: item.description |
+
+| '',
+              pubDate: item.pubDate |
+
+| ''
             }));
           }
         }
@@ -372,7 +382,9 @@
     }
 
     function findTodayItem(items) {
-      if (!items || items.length === 0) return null;
+      if (!items |
+
+| items.length === 0) return null;
 
       if (items.length === 1) {
         return items[0];
@@ -384,12 +396,19 @@
       const dayNum = now.getDate();
       const monthNum = now.getMonth() + 1;
 
-      let match = items.find(i => (i.title || '').toLowerCase().includes(todayName));
+      let match = items.find(i => (i.title |
+
+| '').toLowerCase().includes(todayName));
       if (match) return match;
 
       match = items.find(i => {
-        const str = `${i.title || ''} ${i.pubDate || ''}`;
-        return str.includes(todayISO) || str.includes(`${dayNum}/${monthNum}`);
+        const str = `${i.title |
+
+| ''} ${i.pubDate |
+| ''}`;
+        return str.includes(todayISO) |
+
+| str.includes(`${dayNum}/${monthNum}`);
       });
       if (match) return match;
 
@@ -410,7 +429,9 @@
         .replace(/<p[^>]*>/gi, '');
 
       const doc = new DOMParser().parseFromString(text, 'text/html');
-      let decoded = doc.body.textContent || "";
+      let decoded = doc.body.textContent |
+
+| "";
 
       return decoded.trim();
     }
@@ -419,7 +440,9 @@
       const menuEl = document.getElementById('lunch-menu');
       const items = await fetchMenuData();
 
-      if (!items || items.length === 0) {
+      if (!items |
+
+| items.length === 0) {
         menuEl.textContent = "Ingen lunch serveras idag.";
         return;
       }
@@ -428,7 +451,10 @@
       if (todayItem) {
         const desc = cleanText(todayItem.description);
         const title = cleanText(todayItem.title);
-        menuEl.textContent = desc || title || "Ingen matsedel angiven för idag.";
+        menuEl.textContent = desc |
+
+| title |
+| "Ingen matsedel angiven för idag.";
       } else {
         menuEl.textContent = "Ingen lunch serveras idag.";
       }
