@@ -137,7 +137,7 @@
 
   <!-- Google Presentation (Gychromebit20) -->
   <div id="presentation-container">
-    <iframe 
+    <iframe
       id="presentation-frame"
       src="about:blank"
       allow="autoplay; fullscreen"
@@ -154,12 +154,12 @@
       <div id="clock-content">
         <svg id="analog-clock" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="46" stroke="rgba(255, 255, 255, 0.25)" stroke-width="3" fill="rgba(0, 0, 0, 0.30)" />
-          
+
           <line x1="50" y1="8" x2="50" y2="15" stroke="rgba(255, 255, 255, 0.85)" stroke-width="2.5" stroke-linecap="round" />
           <line x1="92" y1="50" x2="85" y2="50" stroke="rgba(255, 255, 255, 0.85)" stroke-width="2.5" stroke-linecap="round" />
           <line x1="50" y1="92" x2="50" y2="85" stroke="rgba(255, 255, 255, 0.85)" stroke-width="2.5" stroke-linecap="round" />
           <line x1="8" y1="50" x2="15" y2="50" stroke="rgba(255, 255, 255, 0.85)" stroke-width="2.5" stroke-linecap="round" />
-          
+
           <line id="hour-hand" x1="50" y1="50" x2="50" y2="27" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" />
           <line id="min-hand" x1="50" y1="50" x2="50" y2="17" stroke="#e5e7eb" stroke-width="3" stroke-linecap="round" />
           <line id="sec-hand" x1="50" y1="50" x2="50" y2="13" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" />
@@ -196,7 +196,6 @@
     const REGULAR_START_MINUTE = 30;
     const REGULAR_END_HOUR = 17;
     const REGULAR_END_MINUTE = 0;
-    const WEEKDAYS_ONLY = true;
 
     // Specialdag: 14 november 2026 (kl. 07:00–15:00)
     const SPECIAL_YEAR = 2026;
@@ -217,7 +216,7 @@
     // ==========================================
     function updateDisplayAndSchedule() {
       const now = new Date();
-      
+
       // Digital tid
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
@@ -287,9 +286,7 @@
       const overlay = document.getElementById('overlay-wrapper');
 
       if (active) {
-        if (iframe.src === 'about:blank' |
-
-| !iframe.src) {
+        if (iframe.src === 'about:blank' || !iframe.src) {
           iframe.src = PRESENTATION_URL;
         }
         container.style.display = 'block';
@@ -329,15 +326,9 @@
           const json = await res.json();
           if (json.status === 'ok' && Array.isArray(json.items) && json.items.length > 0) {
             return json.items.map(item => ({
-              title: item.title |
-
-| '',
-              description: item.description |
-
-| '',
-              pubDate: item.pubDate |
-
-| ''
+              title: item.title || '',
+              description: item.description || '',
+              pubDate: item.pubDate || ''
             }));
           }
         }
@@ -382,9 +373,7 @@
     }
 
     function findTodayItem(items) {
-      if (!items |
-
-| items.length === 0) return null;
+      if (!items || items.length === 0) return null;
 
       if (items.length === 1) {
         return items[0];
@@ -396,19 +385,12 @@
       const dayNum = now.getDate();
       const monthNum = now.getMonth() + 1;
 
-      let match = items.find(i => (i.title |
-
-| '').toLowerCase().includes(todayName));
+      let match = items.find(i => (i.title || '').toLowerCase().includes(todayName));
       if (match) return match;
 
       match = items.find(i => {
-        const str = `${i.title |
-
-| ''} ${i.pubDate |
-| ''}`;
-        return str.includes(todayISO) |
-
-| str.includes(`${dayNum}/${monthNum}`);
+        const str = `${i.title || ''} ${i.pubDate || ''}`;
+        return str.includes(todayISO) || str.includes(`${dayNum}/${monthNum}`);
       });
       if (match) return match;
 
@@ -429,9 +411,7 @@
         .replace(/<p[^>]*>/gi, '');
 
       const doc = new DOMParser().parseFromString(text, 'text/html');
-      let decoded = doc.body.textContent |
-
-| "";
+      let decoded = doc.body.textContent || "";
 
       return decoded.trim();
     }
@@ -440,9 +420,7 @@
       const menuEl = document.getElementById('lunch-menu');
       const items = await fetchMenuData();
 
-      if (!items |
-
-| items.length === 0) {
+      if (!items || items.length === 0) {
         menuEl.textContent = "Ingen lunch serveras idag.";
         return;
       }
@@ -451,10 +429,7 @@
       if (todayItem) {
         const desc = cleanText(todayItem.description);
         const title = cleanText(todayItem.title);
-        menuEl.textContent = desc |
-
-| title |
-| "Ingen matsedel angiven för idag.";
+        menuEl.textContent = desc || title || "Ingen matsedel angiven för idag.";
       } else {
         menuEl.textContent = "Ingen lunch serveras idag.";
       }
